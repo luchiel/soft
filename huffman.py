@@ -55,15 +55,8 @@ def encode(reader):
     result.append(stub)
     encoded += '0' * stub
     for i in range(0, len(encoded), 8):
-        result.append(to_decimal(encoded[i : i + 8]))
+        result.append(int(encoded[i : i + 8], 2))
     return result
-
-def to_decimal(n):
-    r = 0L
-    for i, el in enumerate(reversed(n)):
-        if el == '1':
-            r += 2 ** i
-    return r
 
 def decode(reader):
     s = {}
@@ -82,7 +75,7 @@ def decode(reader):
     while i < len(line):
         i += 1
         if line[i - 1] == '1':
-            node.value = chr(to_decimal(line[i : i + 8]))
+            node.value = chr(int(line[i : i + 8], 2))
             i += 8
             while node.parent != None and node == node.parent.right:
                 node = node.parent
