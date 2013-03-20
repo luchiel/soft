@@ -17,11 +17,10 @@ def binary_code(symbol):
         s = '0' * (8 - len(s)) + s
     return s
 
-def encode(reader):
+def encode(reader, fo):
     c = Counter()
     for line in reader:
         c += Counter(line)
-
     if c == {}:
         return ''
 
@@ -56,9 +55,9 @@ def encode(reader):
     encoded += '0' * stub
     for i in range(0, len(encoded), 8):
         result.append(int(encoded[i : i + 8], 2))
-    return result
+    fo.write(result)
 
-def decode(reader):
+def decode(reader, fo):
     s = {}
     current_code = ''
     root = Node(None)
@@ -97,4 +96,4 @@ def decode(reader):
             j += 1
         decoded += node.value
         i += j if j > 0 else 1
-    return decoded
+    fo.write(decoded)

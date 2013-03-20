@@ -16,11 +16,11 @@ def run(filename, method, decompress):
         alg = __import__(method)
         if decompress:
             fo = open(filename + '.depack', 'wb')
-            fo.write(alg.decode(fi))
+            alg.decode(fi, fo)
             fo.close()
         else:
             fo = open(filename + '.pack', 'wb')
-            fo.write(alg.encode(fi))
+            alg.encode(fi, fo)
             fo.close()
         fi.close()
 

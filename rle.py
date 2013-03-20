@@ -1,6 +1,6 @@
 MAX_NUMBER = 255
 
-def encode(reader):
+def encode(reader, fo):
     prev = None
     number = 0
     encoded = bytearray()
@@ -14,16 +14,19 @@ def encode(reader):
                 prev = symbol
             else:
                 number += 1
+        fo.write(encoded)
+        encoded = bytearray()
+
     if prev != None:
         encoded.append(number)
         encoded.append(prev)
-    return encoded
+    fo.write(encoded)
 
-def decode(reader):
-    decoded = ''
+def decode(reader, fo):
     for line in reader:
         i = 0
+        decoded = ''
         while i < len(line):
             decoded += line[i + 1] * ord(line[i])
             i += 2
-    return decoded
+        fo.write(decoded)
