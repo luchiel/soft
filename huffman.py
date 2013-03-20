@@ -1,3 +1,5 @@
+from collections import Counter
+
 class Node(object):
     def __init__(self, parent):
         self.left = None
@@ -16,18 +18,14 @@ def binary_code(symbol):
     return s
 
 def encode(reader):
-    s = {}
+    c = Counter()
     for line in reader:
-        for symbol in line:
-            if symbol in s:
-                s[symbol] += 1
-            else:
-                s[symbol] = 1
+        c += Counter(line)
 
-    if s == {}:
+    if c == {}:
         return ''
 
-    l = sorted(zip(s.values(), s.keys()))
+    l = sorted(zip(c.values(), c.keys()))
     l = map(lambda x: (x[0], x[1], '1' + binary_code(x[1])), l)
     s = {}
 
