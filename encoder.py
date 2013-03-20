@@ -17,9 +17,12 @@ def run(filename, method, decompress):
         if decompress:
             fo = open(filename + '.depack', 'wb')
             fo.write(alg.decode(fi))
+            fo.close()
         else:
             fo = open(filename + '.pack', 'wb')
             fo.write(alg.encode(fi))
+            fo.close()
+        fi.close()
 
     except IOError as e:
        print 'Oh dear.', filename, 'not found'

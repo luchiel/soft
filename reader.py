@@ -17,3 +17,6 @@ class Reader(object):
 
     def read(self, size=-1):
         return self.file.read(size)
+
+    def close(self):
+        self.file.close()
