@@ -39,23 +39,25 @@ def encode(reader, fo):
         l.append((n1 + n2, s1 + s2, '0' + t1 + t2))
         l.sort()
 
-    encoded = ''
+    def write_full_bytes(encoded):
+        piece = len(encoded) / 8 * 8
+        fo.write(bytearray([int(encoded[i : i + 8], 2) for i in range(0, piece, 8)]))
+        return encoded[piece:]
+
+    fo.write(bytearray(1))
+    encoded = write_full_bytes(l[0][2])
     reader.reset()
     for line in reader:
         for symbol in line:
             encoded += s[symbol]
+        encoded = write_full_bytes(encoded)
 
-    encoded = l[0][2] + encoded
-
-    piece = len(encoded) % 8
-    stub = (8 - piece) if piece != 0 else 0
-
-    result = bytearray()
-    result.append(stub)
+    stub = (8 - len(encoded)) if len(encoded) != 0 else 0
     encoded += '0' * stub
-    for i in range(0, len(encoded), 8):
-        result.append(int(encoded[i : i + 8], 2))
-    fo.write(result)
+    write_full_bytes(encoded)
+
+    fo.seek(0)
+    fo.write(chr(stub))
 
 def decode(reader, fo):
     s = {}
