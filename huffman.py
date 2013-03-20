@@ -12,7 +12,7 @@ def add_code(line, s, code):
 def binary_code(symbol):
     s = bin(ord(symbol))[2:]
     if len(s) < 8:
-        s = ''.join(['0'] * (8 - len(s))) + s
+        s = '0' * (8 - len(s)) + s
     return s
 
 def encode(reader):
@@ -55,7 +55,7 @@ def encode(reader):
 
     result = bytearray()
     result.append(stub)
-    encoded += ''.join(['0'] * stub)
+    encoded += '0' * stub
     for i in range(0, len(encoded), 8):
         result.append(to_decimal(encoded[i : i + 8]))
     return result

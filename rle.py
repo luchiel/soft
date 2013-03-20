@@ -24,6 +24,6 @@ def decode(reader):
     for line in reader:
         i = 0
         while i < len(line):
-            decoded += ''.join([line[i + 1]] * ord(line[i]))
+            decoded += line[i + 1] * ord(line[i])
             i += 2
     return decoded
