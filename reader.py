@@ -2,7 +2,7 @@ import os
 
 LINE_SIZE = 2 ** 10
 
-class Reader:
+class Reader(object):
     def __init__(self, filename):
         self.file = open(filename, 'rb')
 
