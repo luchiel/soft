@@ -11,19 +11,16 @@ class Node(object):
 
 def add_code(line, s, code):
     for symbol in line:
-        s[symbol] = code + s[symbol] if symbol in s else code
+        s[symbol] = code + s.get(symbol, '')
 
 def binary_code(symbol):
-    s = bin(ord(symbol))[2:]
-    if len(s) < 8:
-        s = '0' * (8 - len(s)) + s
-    return s
+    return bin(ord(symbol))[2:].zfill(8)
 
 def encode(reader, fo):
     c = Counter()
     for line in reader:
         c += Counter(line)
-    if c == {}:
+    if not c:
         return ''
 
     l = sorted(zip(c.values(), c.keys()))
@@ -74,7 +71,7 @@ def decode(reader, fo):
 
     i = 0
     full_line = reader.read()
-    line = ''.join([binary_code(symbol) for symbol in full_line])
+    line = ''.join([binary_code(symbol) for symbol in full_line])[:-stub]
     while i < len(line):
         i += 1
         if line[i - 1] == '1':
@@ -92,7 +89,7 @@ def decode(reader, fo):
             node = node.left
 
     decoded = ''
-    while i < len(line) - stub:
+    while i < len(line):
         node = root
         j = 0
         while node.value == None:
@@ -104,5 +101,5 @@ def decode(reader, fo):
             fo.write(decoded)
             decoded = ''
 
-        i += j if j > 0 else 1
+        i += j or 1
     fo.write(decoded)

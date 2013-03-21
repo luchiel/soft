@@ -12,16 +12,14 @@ def run(filename, method, decompress):
         return
 
     try:
-        fi = reader.Reader(filename)
         alg = __import__(method)
+        fi = reader.Reader(filename)
         if decompress:
-            fo = open(filename + '.depack', 'wb')
-            alg.decode(fi, fo)
-            fo.close()
+            with open(filename + '.depack', 'wb') as fo:
+                alg.decode(fi, fo)
         else:
-            fo = open(filename + '.pack', 'wb')
-            alg.encode(fi, fo)
-            fo.close()
+            with open(filename + '.pack', 'wb') as fo:
+                alg.encode(fi, fo)
         fi.close()
 
     except IOError as e:
@@ -51,10 +49,9 @@ def test(method):
     def process_file(filename):
         run(filename, method, False)
         run(filename + '.pack', method, True)
-        print 'Before: {0} bytes, after: {1} bytes'.format(os.stat(filename).st_size, os.stat(filename + '.pack').st_size)
-        not_corrupted = filecmp.cmp(filename, filename + '.pack.depack', False)
-        print 'Data was {0}corrupted'.format('not ' if not_corrupted else '')
-        if not not_corrupted:
+        print 'Before: {0} bytes, after: {1} bytes'.format(os.path.getsize(filename), os.path.getsize(filename + '.pack'))
+        if not filecmp.cmp(filename, filename + '.pack.depack', False):
+            print 'Data was corrupted'
             find_error(filename)
 
     if method == 'huffman':
@@ -66,11 +63,13 @@ def test(method):
     if method == 'rle':
         for i in range(3):
             process_file('rle_{0}.txt'.format(i))
+    print 'END'
 
-parser = argparse.ArgumentParser()
-parser.add_argument('filename', help='name of a file')
-parser.add_argument('-m', '--method', help='method to be used', choices=['rle', 'huffman'], required=True)
-parser.add_argument('-d', '--decompress', help='decompress file', action='store_true')
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename', help='name of a file')
+    parser.add_argument('-m', '--method', help='method to be used', choices=['rle', 'huffman'], required=True)
+    parser.add_argument('-d', '--decompress', help='decompress file', action='store_true')
 
-args = parser.parse_args()
-run(args.filename, args.method, args.decompress)
+    args = parser.parse_args()
+    run(args.filename, args.method, args.decompress)
