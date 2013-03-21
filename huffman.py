@@ -1,5 +1,7 @@
 from collections import Counter
 
+LINE_SIZE = 2 ** 10
+
 class Node(object):
     def __init__(self, parent):
         self.left = None
@@ -96,6 +98,11 @@ def decode(reader, fo):
         while node.value == None:
             node = node.left if line[i + j] == '0' else node.right
             j += 1
+
         decoded += node.value
+        if len(decoded) > LINE_SIZE:
+            fo.write(decoded)
+            decoded = ''
+
         i += j if j > 0 else 1
     fo.write(decoded)
